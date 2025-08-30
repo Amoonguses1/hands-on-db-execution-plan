@@ -30,3 +30,11 @@ re-run: clean build run
 exec:
 	@echo "--- Connecting to PostgreSQL container ---"
 	docker exec -it $(CONTAINER_NAME) psql -U postgres -d app_db
+
+sql:
+	@if [ -z "$(file)" ]; then \
+		echo "Usage: make sql file=<filename.sql>"; \
+		exit 1; \
+	fi
+	@echo "--- Executing SQL file: $(file) ---"
+	time docker exec -it ${CONTAINER_NAME} psql -P pager=of -U postgres -f ./app/sql/${file} > result.txt 2>&1
